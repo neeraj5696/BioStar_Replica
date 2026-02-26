@@ -396,7 +396,7 @@ const EmployeeDashboardHeader = () => {
               <div className="kpi-title">{kpi.title}</div>
               <div className="kpi-subtitle">{kpi.subtitle}</div>
             </div>
-            <div className="kpi-sparkline">
+            {/* <div className="kpi-sparkline">
               <svg viewBox="0 0 100 20">
                 <polyline
                   points="0,15 20,12 40,8 60,10 80,6 100,4"
@@ -405,7 +405,7 @@ const EmployeeDashboardHeader = () => {
                   strokeWidth="2"
                 />
               </svg>
-            </div>
+            </div> */}
           </div>
         ))}
       </div>
