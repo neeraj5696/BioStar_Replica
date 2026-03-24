@@ -173,7 +173,7 @@ function Dashboard() {
               <BarChart3 size={20} className="sidebar-icon" />
               <span>DASHBOARD</span>
             </a>
-            <a href="#" className="sidebar-item">
+            <a href="/users" className="sidebar-item">
               <Users size={20} className="sidebar-icon" />
               <span>USER</span>
             </a>
@@ -232,43 +232,62 @@ function Dashboard() {
           <div className="dashboard-grid">
 
 
-            {/* Device & User Status Overview - Analytics Card */}
-            <div className="analytics-card">
-              <h3 className="analytics-title">Device & User Status Overview</h3>
-              <div className="analytics-rows">
+          
 
-                {/* Connected Device */}
-                <div className="analytics-row">
-                  <span className="row-label">Active Users</span>
-                  <div className="progress-bar">
-                    <div
-                      className="progress-fill blue"
-                      style={{ width: "85%" }}
-                    ></div>
+             {/* Active/Inactive Users - Donut Chart */}
+            <div className="dashboard-card donut-card">
+              <div className="card-header">
+                <h3 className="card-title">User Status</h3>
+                <button className="report-btn">Report</button>
+              </div>
+              <div className="donut-container">
+                <svg viewBox="0 0 200 200" className="donut-svg">
+                  <circle cx="100" cy="100" r="70" fill="none" stroke="#f3f4f6" strokeWidth="20" />
+                  {(() => {
+                    const total = userStats?.totalUsers || 1;
+                    const active = userStats?.activeUsers || 0;
+                    const inactive = userStats?.inactiveUsers || 0;
+                    const circumference = 2 * Math.PI * 70;
+                    const activeArc = (active / total) * circumference;
+                    const inactiveArc = (inactive / total) * circumference;
+                    let offset = 0;
+                    return (
+                      <>
+                        <circle cx="100" cy="100" r="70" fill="none" stroke="#10b981" strokeWidth="20"
+                          strokeDasharray={`${activeArc} ${circumference}`}
+                          strokeDashoffset={-offset}
+                          transform="rotate(-90 100 100)" />
+                        <circle cx="100" cy="100" r="70" fill="none" stroke="#ef4444" strokeWidth="20"
+                          strokeDasharray={`${inactiveArc} ${circumference}`}
+                          strokeDashoffset={-(offset += activeArc)}
+                          transform="rotate(-90 100 100)" />
+                      </>
+                    );
+                  })()}
+                  <text x="100" y="95" textAnchor="middle" className="donut-total">
+                    {userStats?.totalUsers || 0}
+                  </text>
+                  <text x="100" y="110" textAnchor="middle" className="donut-label">Total</text>
+                </svg>
+                <div className="donut-legend">
+                  <div className="legend-row">
+                    <span className="legend-dot green"></span>
+                    <span className="legend-text">Active</span>
+                    <span className="legend-percent">{userStats?.totalUsers ? Math.round((userStats.activeUsers / userStats.totalUsers) * 100) : 0}%</span>
+                    <span className="legend-value">{userStats?.activeUsers || 0}</span>
                   </div>
-                  <span className="row-value"> {userStats?.activeUsers || 0} </span>
-                </div>
-
-
-                <div className="analytics-row">
-                  <span className="row-label">InActive Users</span>
-                  <div className="progress-bar">
-                    <div
-                      className="progress-fill orange"
-                      style={{ width: "12%" }}
-                    ></div>
+                  <div className="legend-row">
+                    <span className="legend-dot red"></span>
+                    <span className="legend-text">Inactive</span>
+                    <span className="legend-percent">{userStats?.totalUsers ? Math.round((userStats.inactiveUsers / userStats.totalUsers) * 100) : 0}%</span>
+                    <span className="legend-value">{userStats?.inactiveUsers || 0}</span>
                   </div>
-                  <span className="row-value"> {userStats?.inactiveUsers || 0} </span>
-                </div>
-                <div className="analytics-row">
-                  <span className="row-label"> Total No of Users</span>
-                  <div className="progress-bar">
-                    <div
-                      className="progress-fill green"
-                      style={{ width: "92%" }}
-                    ></div>
+                  <div className="legend-row">
+                    <span className="legend-dot blue"></span>
+                    <span className="legend-text">Total</span>
+                    <span className="legend-percent">100%</span>
+                    <span className="legend-value">{userStats?.totalUsers || 0}</span>
                   </div>
-                  <span className="row-value">{userStats?.totalUsers ||0} </span>
                 </div>
               </div>
             </div>
