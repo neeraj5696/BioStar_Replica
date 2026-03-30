@@ -1,6 +1,39 @@
-import React from 'react';
+import {useEffect, useState} from 'react';
+import axios from "axios";
+
+const backendurl = import.meta.env.VITE_BACKEND_URL 
+
+const token = localStorage.getItem('lebhai')
 
 const LateInEarlyOutCard = () => {
+
+
+  const [data, setData] = useState(null);
+
+  const fetchOddHours = async () => {
+    try {
+      const result = await axios.get(`${backendurl}/api/Dashboard/PunchSummaryToday`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      console.log('✅ qbe:', result.data);
+      setData(result.data);
+    } catch (err) {
+      console.error('❌ OddHours fetch failed:', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchOddHours();
+  }, []);
+
+
+
+
+    
+
+
+
+
   const dualBarData = [
     { day: 'Mon', lateIn: 12, earlyOut: 8 },
     { day: 'Tue', lateIn: 14, earlyOut: 10 },
@@ -65,7 +98,7 @@ const LateInEarlyOutCard = () => {
                 <span className="metric-icon">🔴</span>
                 <span className="metric-title">Late Arrivals</span>
               </div>
-              <div className="metric-value">35</div>
+              <div className="metric-value">{data?.firstPunchAfter930 ?? '-'}</div>
               <div className="metric-trend">This Week</div>
             </div>
             
@@ -74,7 +107,7 @@ const LateInEarlyOutCard = () => {
                 <span className="metric-icon">🟡</span>
                 <span className="metric-title">Early Departures</span>
               </div>
-              <div className="metric-value">25</div>
+              <div className="metric-value">{data?.lastPunchBefore530 ?? '-'}</div>
               <div className="metric-trend">This Week</div>
             </div>
           </div>

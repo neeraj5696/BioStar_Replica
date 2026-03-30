@@ -1,16 +1,16 @@
-import {
-  EmployeeDashboardHeader,
-  EmployeeDashboard,
-} from "./components/EmployeeDashboard";
+// import {
+//   EmployeeDashboardHeader
+// } from "./components/EmployeeDashboard";
 import LadyEmpLateExitCard from "./components/LadyEmpLateExitCard";
 import EmpLateExitCard from "./components/EmpLateExitCard";
 import DifferentlyAbledCard from "./components/DifferentlyAbledCard";
 import LateInEarlyOutCard from "./components/LateInEarlyOutCard";
 import AlertsFrequentlyInOutCard from "./components/AlertsFrequentlyInOutCard";
 import FrequentAccessDeniedCard from "./components/FrequentAccessDeniedCard";
-import SwipeDataCard from "./components/SwipeDataCard";
+
 import OddHoursSwipeCard from "./components/OddHoursSwipeCard";
-import axios from "axios";
+
+import api from "./api";
 
 
 
@@ -36,7 +36,7 @@ import {
 import "./App.css";
 import { useState, useEffect } from "react";
 
-const backendurl = import.meta.env.VITE_BACKEND_URL as string | unknown
+
 
 type UserStats = {
   totalUsers: number;
@@ -56,7 +56,7 @@ type UserStats1 = {
 
 
 
-const token = localStorage.getItem('lebhai')
+
 
 
 function Dashboard() {
@@ -69,12 +69,7 @@ function Dashboard() {
   const [userStats1, setUserStats1] = useState<UserStats1 | null>(null);
 
   const fetchEmployee = async () => {
-    const fetchEmployeeresult = await axios.get(`${backendurl}/api/Dashboard/BioStar_Dep_EmpCount`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      })
+    const fetchEmployeeresult = await api.get('/api/Dashboard/BioStar_Dep_EmpCount');
 
     setTotaldepartment(fetchEmployeeresult.data.totalDepartments)
     setDepartment(fetchEmployeeresult.data?.data)
@@ -82,24 +77,15 @@ function Dashboard() {
   }
 
   const fetchStatusEmployee = async () => {
-    const fetchEmployeestatus = await axios.get(`${backendurl}/api/Dashboard/User-Counts-BioStar`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      })
+    const fetchEmployeestatus = await api.get('/api/Dashboard/User-Counts-BioStar');
 
     setUserStats(fetchEmployeestatus.data)
-    console.log('le maderchod', fetchEmployeestatus)
+    console.log('le data', fetchEmployeestatus)
+    console.log('active  user', userStats?.activeUsers)
 
   }
-   const fetchStatusEmployee1 = async () => {
-    const fetchEmployeestatus1 = await axios.get(`${backendurl}/api/Dashboard/Dashboard-count`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      })
+  const fetchStatusEmployee1 = async () => {
+    const fetchEmployeestatus1 = await api.get('/api/Dashboard/Dashboard-count');
 
     setUserStats1(fetchEmployeestatus1.data)
     console.log('le maderchod2', fetchEmployeestatus1)
@@ -113,13 +99,7 @@ function Dashboard() {
   }, [])
 
 
-  const lateExitData = [
-    { day: "Mon", count: 14, percentage: 73 },
-    { day: "Tue", count: 17, percentage: 89 },
-    { day: "Wed", count: 12, percentage: 63 },
-    { day: "Thu", count: 18, percentage: 95 },
-    { day: "Fri", count: 19, percentage: 100 },
-  ];
+
 
   return (
     <div className="app">
@@ -222,19 +202,9 @@ function Dashboard() {
            
         </div> */}
 
-          <div>
+          <div  className="dashboard-grid">
 
-            <div className="employee-dashboard-header">
-              <EmployeeDashboardHeader />
-            </div>
-          </div>
-
-          <div className="dashboard-grid">
-
-
-          
-
-             {/* Active/Inactive Users - Donut Chart */}
+            {/* Active/Inactive Users - Donut Chart */}
             <div className="dashboard-card donut-card">
               <div className="card-header">
                 <h3 className="card-title">User Status</h3>
@@ -314,15 +284,15 @@ function Dashboard() {
                     const absent = userStats1?.absentUsers || 0;
                     const inside = userStats1?.insideUsers || 0;
                     const outside = userStats1?.outsideUsers || 0;
-                    
+
                     const circumference = 2 * Math.PI * 70;
                     const presentArc = (present / total) * circumference;
                     const absentArc = (absent / total) * circumference;
                     const insideArc = (inside / total) * circumference;
                     const outsideArc = (outside / total) * circumference;
-                    
+
                     let offset = 0;
-                    
+
                     return (
                       <>
                         <circle
@@ -378,7 +348,7 @@ function Dashboard() {
                     textAnchor="middle"
                     className="donut-total"
                   >
-                    {userStats1?.totalUsers || 0}
+                    {userStats1?.totalUsers ? Math.round((userStats1.outsideUsers / userStats1.totalUsers) * 100) : 0}%
                   </text>
                   <text
                     x="100"
@@ -386,7 +356,7 @@ function Dashboard() {
                     textAnchor="middle"
                     className="donut-label"
                   >
-                    Total
+                    occupancy
                   </text>
                 </svg>
                 <div className="donut-legend">
@@ -488,6 +458,14 @@ function Dashboard() {
                 </div>
               </div>
             </div>
+           
+          </div>
+
+          <div className="dashboard-grid1">
+
+
+
+
 
 
 
@@ -495,54 +473,9 @@ function Dashboard() {
             {/* Odd Hours Swipe Card */}
             <OddHoursSwipeCard />
 
-            {/* Odd Hours In/Out Swipe */}
-            <div className="dashboard-card night-card">
-              <div className="card-header">
-                <div className="card-icon night-icon">🌙</div>
-                <h3 className="card-title">Odd Hrs In/Out Swipe</h3>
-              </div>
-              <div className="night-stats">
-                <div className="stat-item">
-                  <span className="stat-label">Before 8 AM</span>
-                  <span className="stat-value">23</span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-label">After 8 PM</span>
-                  <span className="stat-value">45</span>
-                </div>
-              </div>
-              <div className="area-chart">
-                <svg viewBox="0 0 200 60" className="night-chart">
-                  <defs>
-                    <linearGradient
-                      id="nightGradient"
-                      x1="0%"
-                      y1="0%"
-                      x2="0%"
-                      y2="100%"
-                    >
-                      <stop offset="0%" stopColor="#6366f1" stopOpacity="0.8" />
-                      <stop
-                        offset="100%"
-                        stopColor="#6366f1"
-                        stopOpacity="0.1"
-                      />
-                    </linearGradient>
-                  </defs>
-                  <path
-                    d="M0,50 Q50,20 100,30 T200,25 L200,60 L0,60 Z"
-                    fill="url(#nightGradient)"
-                  />
-                </svg>
-              </div>
-            </div>
-
-            {/* Swipe Data Card */}
-            <SwipeDataCard />
-
             {/* Emp Late Exit */}
 
-            <EmpLateExitCard lateExitData={lateExitData} />
+            <EmpLateExitCard activeUsers={userStats?.activeUsers ?? 0} />
 
             <LateInEarlyOutCard />
 
@@ -552,7 +485,7 @@ function Dashboard() {
 
             <DifferentlyAbledCard />
           </div>
-          <EmployeeDashboard />
+          {/* <EmployeeDashboard /> */}
         </main>
       </div>
     </div>

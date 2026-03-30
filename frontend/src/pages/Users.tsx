@@ -36,16 +36,12 @@ const Users = () => {
     useEffect(() => {
         const headers = { headers: getAuthHeader() }
         Promise.all([
-            axios.get(`${backendurl}/api/Report/employees`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      }),
+            axios.get(`${backendurl}/api/Report/employees`, headers),
             axios.get(`${backendurl}/api/Report/departments`, headers),
             axios.get(`${backendurl}/api/Report/workgroups`, headers),
         ]).then(([empRes, depRes, wgRes]) => {
             setEmployees(empRes.data)
-            console.log('ledata', empRes)
+           
             setDepartments(depRes.data)
             setWorkgroups(wgRes.data)
         }).finally(() => setDropdownsLoading(false))
@@ -64,7 +60,7 @@ const Users = () => {
                 return
             }
             const res = await axios.post(`${backendurl}/api/Report/firstin-lastout`, filters, { headers: getAuthHeader() })
-            setReportData(res.data)           
+            setReportData(res.data)
         } finally {
             setLoading(false)
         }
@@ -81,7 +77,7 @@ const Users = () => {
         const rows = reportData.map(r => Object.values(r).join(',')).join('\n')
         const blob = new Blob([`${headers}\n${rows}`], { type: 'text/csv' })
         const url = URL.createObjectURL(blob)
-        const a = document.createElement('a'); a.href = url; a.download = 'firstin-lastout.csv'; a.click()
+        const a = document.createElement('a'); a.href = url; a.download = `${filters.selectedEmployeeId}_firstin-lastout.csv`; a.click()
         URL.revokeObjectURL(url)
     }
 

@@ -599,11 +599,20 @@
 }
 
 /* Dashboard Grid */
-.dashboard-grid {
+.dashboard-grid1 {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 20px;
   margin-top: 24px;
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  margin-top: 24px;
+  width: 100%;
 }
 
 .dashboard-card {
@@ -777,10 +786,17 @@
 }
 
 /* Donut Chart Card */
-.donut-card {
+.donut-card1 {
   display: grid;
   background: linear-gradient(135deg, #fefefe 0%, #f8fafc 100%);
   grid-column: span 2;
+}
+.donut-card {
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #fefefe 0%, #f8fafc 100%);
+  flex: 1 1 0;
+  min-width: 0;
 }
 
 .donut-container {
@@ -861,9 +877,15 @@
   gap: 12px;
 }
 
-.department-list-card {
+.department-list-card1 {
   display: grid;
   grid-column: span 2;
+}
+.department-list-card {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  min-width: 0;
 }
 
 .dept-item {
@@ -1812,7 +1834,7 @@
 .alerts-summary {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 20px;
 }
 
 .summary-stats {
