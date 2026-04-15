@@ -8,7 +8,7 @@ const OddHoursSwipeCard = () => {
   const fetchOddHours = async () => {
     try {
       const result = await api.get('/api/Dashboard/PunchSummaryToday');
-      console.log('✅ OddHours raw response:', result.data);
+      // console.log('✅ OddHours raw response:', result.data);
       setData(result.data);
     } catch (err) {
       console.error('❌ OddHours fetch failed:', err);

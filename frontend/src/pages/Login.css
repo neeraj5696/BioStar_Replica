@@ -16,6 +16,10 @@
     border-radius: 18px;
     overflow: hidden;
     flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    margin-top: 55px;
+  
 }
 
 .login-left-image img {
@@ -33,7 +37,7 @@
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(20px);
     border-radius: 24px;
-    padding: 40px 60px;
+    /* padding: 40px 60px; - Removed to allow Tailwind padding */
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
     cursor: pointer;
     transition:

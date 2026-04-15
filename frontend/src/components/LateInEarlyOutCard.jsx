@@ -15,7 +15,7 @@ const LateInEarlyOutCard = () => {
       const result = await axios.get(`${backendurl}/api/Dashboard/PunchSummaryToday`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log('✅ qbe:', result.data);
+      // console.log('✅ qbe:', result.data);
       setData(result.data);
     } catch (err) {
       console.error('❌ OddHours fetch failed:', err);

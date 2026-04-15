@@ -1,42 +1,21 @@
-// import {
-//   EmployeeDashboardHeader
-// } from "./components/EmployeeDashboard";
 import LadyEmpLateExitCard from "./components/LadyEmpLateExitCard";
 import EmpLateExitCard from "./components/EmpLateExitCard";
+
 import DifferentlyAbledCard from "./components/DifferentlyAbledCard";
 import LateInEarlyOutCard from "./components/LateInEarlyOutCard";
 import AlertsFrequentlyInOutCard from "./components/AlertsFrequentlyInOutCard";
 import FrequentAccessDeniedCard from "./components/FrequentAccessDeniedCard";
-
 import OddHoursSwipeCard from "./components/OddHoursSwipeCard";
-
+import Header from "./components/Header";
+import UserStatusChart from "./components/UserStatusChart";
+import DepartmentUsersChart from "./components/DepartmentUsersChart";
+import DepartmentListChart from "./components/DepartmentListChart";
 import api from "./api";
-
-
-
-
-import {
-  Settings,
-  Cable,
-  Info,
-  HelpCircle,
-  LogOut,
-  User,
-  BarChart3,
-  Users,
-  Smartphone,
-  DoorOpen,
-  Building2,
-  MapPin,
-  Shield,
-  Eye,
-  Clock,
-  FileText,
-} from "lucide-react";
 import "./App.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react"; 
 
-
+// const backendurl = import.meta.env.VITE_BACKEND_URL as string | unknown
+// const token = localStorage.getItem('lebhai')
 
 type UserStats = {
   totalUsers: number;
@@ -54,6 +33,11 @@ type UserStats1 = {
   type: string;
 };
 
+type Department = {
+  department: string;
+  employeeCount: number;
+};
+
 
 
 
@@ -61,7 +45,7 @@ type UserStats1 = {
 
 function Dashboard() {
 
-  const [department, setDepartment] = useState<[]>()
+  const [department, setDepartment] = useState<Department[]>([])  // Initialize with empty array instead of undefined
   const [totaldepartment, setTotaldepartment] = useState<number | null>(null)
 
 
@@ -80,15 +64,15 @@ function Dashboard() {
     const fetchEmployeestatus = await api.get('/api/Dashboard/User-Counts-BioStar');
 
     setUserStats(fetchEmployeestatus.data)
-    console.log('le data', fetchEmployeestatus)
-    console.log('active  user', userStats?.activeUsers)
+    // console.log('le data', fetchEmployeestatus)
+    // console.log('active  user', userStats?.activeUsers)
 
   }
   const fetchStatusEmployee1 = async () => {
     const fetchEmployeestatus1 = await api.get('/api/Dashboard/Dashboard-count');
 
     setUserStats1(fetchEmployeestatus1.data)
-    console.log('le maderchod2', fetchEmployeestatus1)
+    // console.log('le maderchod2', fetchEmployeestatus1)
 
   }
 
@@ -103,392 +87,143 @@ function Dashboard() {
 
   return (
     <div className="app">
-      {/* Header */}
-      <header className="header">
-        <div className="header-left">
-          <div className="logo-container">
-            <div className="logo-icon">🔬</div>
-            <h1 className="logo">BioStar 2</h1>
-          </div>
-          <nav className="header-nav">
-            <a href="#" className="nav-link">
-              <Settings size={18} className="nav-icon" />
-              <span>Settings</span>
-            </a>
-            <a href="#" className="nav-link">
-              <Cable size={18} className="nav-icon" />
-              <span>Port</span>
-            </a>
-            <a href="#" className="nav-link">
-              <Info size={18} className="nav-icon" />
-              <span>About</span>
-            </a>
-            <a href="#" className="nav-link">
-              <HelpCircle size={18} className="nav-icon" />
-              <span>Help</span>
-            </a>
-          </nav>
+      <Header currentPage="dashboard">
+        <div className="content-header">
+          <h1 className="content-title">Attendance & Access Management</h1>
+          <div className="organization-name">Enterprise Dashboard</div>
         </div>
-        <div className="header-right">
-          <div className="user-info">
-            <div className="user-avatar">
-              <User size={20} />
-            </div>
-            <div className="user-details">
-              <div className="user-name">Niraj Kumar Yadav</div>
-              <div className="user-role">Administrator</div>
-            </div>
-            <button className="logout-btn">
-              <LogOut size={18} />
-            </button>
-          </div>
-        </div>
-      </header>
-
-      <div className="main-container">
-        {/* Sidebar */}
-        <aside className="sidebar">
-          <nav className="sidebar-nav">
-            <a href="#" className="sidebar-item active">
-              <BarChart3 size={20} className="sidebar-icon" />
-              <span>DASHBOARD</span>
-            </a>
-            <a href="/users" className="sidebar-item">
-              <Users size={20} className="sidebar-icon" />
-              <span>USER</span>
-            </a>
-            <a href="#" className="sidebar-item">
-              <Smartphone size={20} className="sidebar-icon" />
-              <span>DEVICE</span>
-            </a>
-            <a href="#" className="sidebar-item">
-              <DoorOpen size={20} className="sidebar-icon" />
-              <span>DOOR</span>
-            </a>
-            <a href="#" className="sidebar-item">
-              <Building2 size={20} className="sidebar-icon" />
-              <span>ELEVATOR</span>
-            </a>
-            <a href="#" className="sidebar-item">
-              <MapPin size={20} className="sidebar-icon" />
-              <span>ZONE</span>
-            </a>
-            <a href="#" className="sidebar-item">
-              <Shield size={20} className="sidebar-icon" />
-              <span>ACCESS CONTROL</span>
-            </a>
-            <a href="#" className="sidebar-item">
-              <Eye size={20} className="sidebar-icon" />
-              <span>MONITORING</span>
-            </a>
-            <a href="#" className="sidebar-item">
-              <Clock size={20} className="sidebar-icon" />
-              <span>TIME ATTENDANCE</span>
-            </a>
-            <a href="/Report" className="sidebar-item">
-              <FileText size={20} className="sidebar-icon" />
-              <span>REPORT</span>
-            </a>
-          </nav>
-        </aside>
-
-        {/* Main Content */}
-        <main className="content">
-          <div className="content-header">
-            <h1 className="content-title">Attendance & Access Management</h1>
-            <div className="organization-name">Enterprise Dashboard</div>
-          </div>
-          {/* <div>
+        {/* <div>
            
         </div> */}
 
-          <div  className="dashboard-grid">
+        <div className="dashboard-grid">
 
-            {/* Active/Inactive Users - Donut Chart */}
-            <div className="dashboard-card donut-card">
-              <div className="card-header">
-                <h3 className="card-title">User Status</h3>
-                <button className="report-btn">Report</button>
-              </div>
-              <div className="donut-container">
-                <svg viewBox="0 0 200 200" className="donut-svg">
-                  <circle cx="100" cy="100" r="70" fill="none" stroke="#f3f4f6" strokeWidth="20" />
-                  {(() => {
-                    const total = userStats?.totalUsers || 1;
-                    const active = userStats?.activeUsers || 0;
-                    const inactive = userStats?.inactiveUsers || 0;
-                    const circumference = 2 * Math.PI * 70;
-                    const activeArc = (active / total) * circumference;
-                    const inactiveArc = (inactive / total) * circumference;
-                    let offset = 0;
-                    return (
-                      <>
-                        <circle cx="100" cy="100" r="70" fill="none" stroke="#10b981" strokeWidth="20"
-                          strokeDasharray={`${activeArc} ${circumference}`}
-                          strokeDashoffset={-offset}
-                          transform="rotate(-90 100 100)" />
-                        <circle cx="100" cy="100" r="70" fill="none" stroke="#ef4444" strokeWidth="20"
-                          strokeDasharray={`${inactiveArc} ${circumference}`}
-                          strokeDashoffset={-(offset += activeArc)}
-                          transform="rotate(-90 100 100)" />
-                      </>
-                    );
-                  })()}
-                  <text x="100" y="95" textAnchor="middle" className="donut-total">
-                    {userStats?.totalUsers || 0}
-                  </text>
-                  <text x="100" y="110" textAnchor="middle" className="donut-label">Total</text>
-                </svg>
-                <div className="donut-legend">
-                  <div className="legend-row">
-                    <span className="legend-dot green"></span>
-                    <span className="legend-text">Active</span>
-                    <span className="legend-percent">{userStats?.totalUsers ? Math.round((userStats.activeUsers / userStats.totalUsers) * 100) : 0}%</span>
-                    <span className="legend-value">{userStats?.activeUsers || 0}</span>
-                  </div>
-                  <div className="legend-row">
-                    <span className="legend-dot red"></span>
-                    <span className="legend-text">Inactive</span>
-                    <span className="legend-percent">{userStats?.totalUsers ? Math.round((userStats.inactiveUsers / userStats.totalUsers) * 100) : 0}%</span>
-                    <span className="legend-value">{userStats?.inactiveUsers || 0}</span>
-                  </div>
-                  <div className="legend-row">
-                    <span className="legend-dot blue"></span>
-                    <span className="legend-text">Total</span>
-                    <span className="legend-percent">100%</span>
-                    <span className="legend-value">{userStats?.totalUsers || 0}</span>
-                  </div>
-                </div>
-              </div>
+          {/* Active/Inactive Users - Donut Chart */}
+          <div className="dashboard-card donut-card">
+            <div className="card-header">
+              <h3 className="card-title">User Status</h3>
+              <button className="report-btn">Report</button>
             </div>
-
-            {/* Department Users - Donut Chart */}
-            <div className="dashboard-card donut-card">
-              <div className="card-header">
-                <h3 className="card-title">User Status</h3>
-                <button className="report-btn">Report</button>
-              </div>
-              <div className="donut-container">
-                <svg viewBox="0 0 200 200" className="donut-svg">
-                  <circle
-                    cx="100"
-                    cy="100"
-                    r="70"
-                    fill="none"
-                    stroke="#f3f4f6"
-                    strokeWidth="20"
-                  />
-                  {(() => {
-                    const total = userStats1?.totalUsers || 1;
-                    const present = userStats1?.presentUsers || 0;
-                    const absent = userStats1?.absentUsers || 0;
-                    const inside = userStats1?.insideUsers || 0;
-                    const outside = userStats1?.outsideUsers || 0;
-
-                    const circumference = 2 * Math.PI * 70;
-                    const presentArc = (present / total) * circumference;
-                    const absentArc = (absent / total) * circumference;
-                    const insideArc = (inside / total) * circumference;
-                    const outsideArc = (outside / total) * circumference;
-
-                    let offset = 0;
-
-                    return (
-                      <>
-                        <circle
-                          cx="100"
-                          cy="100"
-                          r="70"
-                          fill="none"
-                          stroke="#10b981"
-                          strokeWidth="20"
-                          strokeDasharray={`${presentArc} ${circumference}`}
-                          strokeDashoffset={-offset}
-                          transform="rotate(-90 100 100)"
-                        />
-                        <circle
-                          cx="100"
-                          cy="100"
-                          r="70"
-                          fill="none"
-                          stroke="#ef4444"
-                          strokeWidth="20"
-                          strokeDasharray={`${absentArc} ${circumference}`}
-                          strokeDashoffset={-(offset += presentArc)}
-                          transform="rotate(-90 100 100)"
-                        />
-                        <circle
-                          cx="100"
-                          cy="100"
-                          r="70"
-                          fill="none"
-                          stroke="#3b82f6"
-                          strokeWidth="20"
-                          strokeDasharray={`${insideArc} ${circumference}`}
-                          strokeDashoffset={-(offset += absentArc)}
-                          transform="rotate(-90 100 100)"
-                        />
-                        <circle
-                          cx="100"
-                          cy="100"
-                          r="70"
-                          fill="none"
-                          stroke="#f59e0b"
-                          strokeWidth="20"
-                          strokeDasharray={`${outsideArc} ${circumference}`}
-                          strokeDashoffset={-(offset += insideArc)}
-                          transform="rotate(-90 100 100)"
-                        />
-                      </>
-                    );
-                  })()}
-                  <text
-                    x="100"
-                    y="95"
-                    textAnchor="middle"
-                    className="donut-total"
-                  >
-                    {userStats1?.totalUsers ? Math.round((userStats1.outsideUsers / userStats1.totalUsers) * 100) : 0}%
-                  </text>
-                  <text
-                    x="100"
-                    y="110"
-                    textAnchor="middle"
-                    className="donut-label"
-                  >
-                    occupancy
-                  </text>
-                </svg>
-                <div className="donut-legend">
-                  <div className="legend-row">
-                    <span className="legend-dot green"></span>
-                    <span className="legend-text">Present</span>
-                    <span className="legend-percent">{userStats1?.totalUsers ? Math.round((userStats1.presentUsers / userStats1.totalUsers) * 100) : 0}%</span>
-                    <span className="legend-value">{userStats1?.presentUsers || 0}</span>
-                  </div>
-                  <div className="legend-row">
-                    <span className="legend-dot red"></span>
-                    <span className="legend-text">Absent</span>
-                    <span className="legend-percent">{userStats1?.totalUsers ? Math.round((userStats1.absentUsers / userStats1.totalUsers) * 100) : 0}%</span>
-                    <span className="legend-value">{userStats1?.absentUsers || 0}</span>
-                  </div>
-                  <div className="legend-row">
-                    <span className="legend-dot blue"></span>
-                    <span className="legend-text">Inside</span>
-                    <span className="legend-percent">{userStats1?.totalUsers ? Math.round((userStats1.insideUsers / userStats1.totalUsers) * 100) : 0}%</span>
-                    <span className="legend-value">{userStats1?.insideUsers || 0}</span>
-                  </div>
-                  <div className="legend-row">
-                    <span className="legend-dot amber"></span>
-                    <span className="legend-text">Outside</span>
-                    <span className="legend-percent">{userStats1?.totalUsers ? Math.round((userStats1.outsideUsers / userStats1.totalUsers) * 100) : 0}%</span>
-                    <span className="legend-value">{userStats1?.outsideUsers || 0}</span>
-                  </div>
+            <div className="donut-container">
+              <UserStatusChart userStats={userStats} />
+              {/* <div className="donut-legend">
+                <div className="legend-row">
+                  <span className="legend-dot green"></span>
+                  <span className="legend-text">Active</span>
+                  <span className="legend-percent">{userStats?.totalUsers ? Math.round((userStats.activeUsers / userStats.totalUsers) * 100) : 0}%</span>
+                  <span className="legend-value">{userStats?.activeUsers || 0}</span>
                 </div>
-              </div>
-            </div>
-
-            {/* Department List - Multilayer Donut */}
-            <div className="dashboard-card department-list-card">
-              <div className="card-header">
-                <h3 className="card-title">Department - No of Users</h3>
-              </div>
-              <div className="multilayer-donut">
-                <svg viewBox="0 0 200 200" className="multilayer-svg">
-                  {department?.slice(0, 3).map((dept: any, index: number) => {
-                    const radii = [80, 65, 50];
-                    const colors = ['#3b82f6', '#10b981', '#f59e0b'];
-                    const totalEmployees = department.reduce((sum: number, d: any) => sum + d.employeeCount, 0);
-                    const circumference = 2 * Math.PI * radii[index];
-                    const percentage = (dept.employeeCount / totalEmployees) * 100;
-                    const dashArray = `${(percentage / 100) * circumference} ${circumference}`;
-
-                    return (
-                      <g key={index}>
-                        <circle
-                          cx="100"
-                          cy="100"
-                          r={radii[index]}
-                          fill="none"
-                          stroke="#f3f4f6"
-                          strokeWidth="12"
-                        />
-                        <circle
-                          cx="100"
-                          cy="100"
-                          r={radii[index]}
-                          fill="none"
-                          stroke={colors[index]}
-                          strokeWidth="12"
-                          strokeDasharray={dashArray}
-                          strokeDashoffset="0"
-                          transform="rotate(-90 100 100)"
-                        />
-                      </g>
-                    );
-                  })}
-                  <text
-                    x="100"
-                    y="95"
-                    textAnchor="middle"
-                    className="donut-total"
-                  >
-                    {totaldepartment}
-                  </text>
-                  <text
-                    x="100"
-                    y="110"
-                    textAnchor="middle"
-                    className="donut-label"
-                  >
-                    Departments
-                  </text>
-                </svg>
-                <div className="multilayer-legend">
-                  {department?.slice(0, 5).map((dept: any, index: number) => {
-                    const colors = ['blue', 'green', 'amber', 'purple', 'teal', 'orange', 'red', 'pink', 'indigo', 'cyan', 'lime', 'emerald', 'violet', 'gray'];
-                    return (
-                      <div key={index} className="legend-row">
-                        <span className={`legend-dot ${colors[index % colors.length]}`}></span>
-                        <span className="legend-text">{dept.department}</span>
-                        <span className="legend-value">{dept.employeeCount}</span>
-                      </div>
-                    );
-                  })}
+                <div className="legend-row">
+                  <span className="legend-dot red"></span>
+                  <span className="legend-text">Inactive</span>
+                  <span className="legend-percent">{userStats?.totalUsers ? Math.round((userStats.inactiveUsers / userStats.totalUsers) * 100) : 0}%</span>
+                  <span className="legend-value">{userStats?.inactiveUsers || 0}</span>
                 </div>
-              </div>
+                <div className="legend-row">
+                  <span className="legend-dot blue"></span>
+                  <span className="legend-text">Total</span>
+                  <span className="legend-percent">100%</span>
+                  <span className="legend-value">{userStats?.totalUsers || 0}</span>
+                </div>
+              </div> */}
             </div>
-           
           </div>
 
-          <div className="dashboard-grid1">
+          {/* Department Users - Donut Chart */}
+          <div className="dashboard-card donut-card">
+            <div className="card-header">
+              <h3 className="card-title">User Status</h3>
+              <button className="report-btn">Report</button>
+            </div>
+            <div className="donut-container">
+              <DepartmentUsersChart userStats1={userStats1} />
 
-
-
-
-
-
-
-            <AlertsFrequentlyInOutCard />
-            {/* Odd Hours Swipe Card */}
-            <OddHoursSwipeCard />
-
-            {/* Emp Late Exit */}
-
-            <EmpLateExitCard activeUsers={userStats?.activeUsers ?? 0} />
-
-            <LateInEarlyOutCard />
-
-            <FrequentAccessDeniedCard />
-
-            <LadyEmpLateExitCard />
-
-            <DifferentlyAbledCard />
+{/*               
+              <div className="donut-legend">
+                <div className="legend-row">
+                  <span className="legend-dot green"></span>
+                  <span className="legend-text">Present</span>
+                  <span className="legend-percent">{userStats1?.totalUsers ? Math.round((userStats1.presentUsers / userStats1.totalUsers) * 100) : 0}%</span>
+                  <span className="legend-value">{userStats1?.presentUsers || 0}</span>
+                </div>
+                <div className="legend-row">
+                  <span className="legend-dot red"></span>
+                  <span className="legend-text">Absent</span>
+                  <span className="legend-percent">{userStats1?.totalUsers ? Math.round((userStats1.absentUsers / userStats1.totalUsers) * 100) : 0}%</span>
+                  <span className="legend-value">{userStats1?.absentUsers || 0}</span>
+                </div>
+                <div className="legend-row">
+                  <span className="legend-dot blue"></span>
+                  <span className="legend-text">Inside</span>
+                  <span className="legend-percent">{userStats1?.totalUsers ? Math.round((userStats1.insideUsers / userStats1.totalUsers) * 100) : 0}%</span>
+                  <span className="legend-value">{userStats1?.insideUsers || 0}</span>
+                </div>
+                <div className="legend-row">
+                  <span className="legend-dot amber"></span>
+                  <span className="legend-text">Outside</span>
+                  <span className="legend-percent">{userStats1?.totalUsers ? Math.round((userStats1.outsideUsers / userStats1.totalUsers) * 100) : 0}%</span>
+                  <span className="legend-value">{userStats1?.outsideUsers || 0}</span>
+                </div>
+              </div> */}
+            </div>
           </div>
-          {/* <EmployeeDashboard /> */}
-        </main>
-      </div>
+
+          {/* Department List - Multilayer Donut */}
+          <div className="dashboard-card department-list-card">
+            <div className="card-header">
+              <h3 className="card-title">Department - No of Users</h3>
+            </div>
+            <div className="multilayer-donut">
+              <DepartmentListChart department={department} totaldepartment={totaldepartment} />
+
+
+              {/* <div className="multilayer-legend">
+                {department?.slice(0, 5).map((dept: any, index: number) => {
+                  const colors = ['blue', 'green', 'amber', 'red', 'purple'];
+                  return (
+                    <div key={index} className="legend-row">
+                      <span className={`legend-dot ${colors[index % colors.length]}`}></span>
+                      <span className="legend-text">{dept.department}</span>
+                      <span className="legend-value">{dept.employeeCount}</span>
+                    </div>
+                  );
+                })}
+              </div> */}
+            </div>
+          </div>
+          
+
+
+        </div>
+
+        <div className="dashboard-grid1">
+
+
+
+
+
+
+
+          <AlertsFrequentlyInOutCard />
+          {/* Odd Hours Swipe Card */}
+          <OddHoursSwipeCard />
+
+          {/* Emp Late Exit */}
+
+          <EmpLateExitCard activeUsers={userStats?.activeUsers ?? 0} />
+
+          <LateInEarlyOutCard />
+
+          <FrequentAccessDeniedCard />
+
+          <LadyEmpLateExitCard />
+
+          <DifferentlyAbledCard />
+        </div>
+        {/* <EmployeeDashboard /> */}
+      </Header>
     </div>
+
   );
 }
 

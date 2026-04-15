@@ -7,8 +7,8 @@ const EmpLateExitCard = ({ activeUsers = 0 }) => {
   const fetchlateEmployee = async () => {
     try {
       const result = await api.get('/api/Dashboard/LateExitLast6Days');
-      console.log('✅ LateExit raw response:', result.data);
-      console.log('✅ LateExit data array:', result.data?.data);
+      // console.log('✅ LateExit raw response:', result.data);
+      // console.log('✅ LateExit data array:', result.data?.data);
       setLateExitData(result.data.data ?? []);
     } catch (err) {
       console.error('❌ LateExit fetch failed:', err);

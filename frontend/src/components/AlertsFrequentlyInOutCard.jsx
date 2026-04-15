@@ -11,7 +11,7 @@ const AlertsFrequentlyInOutCard = () => {
     const fetch = async () => {
       try {
         const result = await api.get('/api/Dashboard/FrequentInOutToday');
-        console.log('✅ AlertsFrequentlyInOut:', result.data);
+        // console.log('✅ AlertsFrequentlyInOut:', result.data);
         setAlertsData(result.data.data ?? []);
       } catch (err) {
         console.error('❌ AlertsFrequentlyInOut fetch failed:', err);
