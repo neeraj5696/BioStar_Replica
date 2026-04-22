@@ -22,7 +22,7 @@ import {
   ArrowRightLeft,
   Coffee,
   AlertCircle,
-  Calendar,
+  
   Key,
   Route,
   PauseCircle,
@@ -30,7 +30,7 @@ import {
   X,
 } from "lucide-react";
 import { useState } from "react";
-import "./Header.css";
+
 
 
 interface HeaderProps {
@@ -58,14 +58,14 @@ const Header = ({ currentPage = "dashboard", children }: HeaderProps) => {
   }
 
   const toggleMenu = (menuName: string) => {
-    setExpandedMenus(prev => 
-      prev.includes(menuName) 
+    setExpandedMenus(prev =>
+      prev.includes(menuName)
         ? prev.filter(m => m !== menuName)
         : [...prev, menuName]
     );
   };
 
-  const isReportPage = currentPage.startsWith('report') || currentPage === 'reports' || currentPage === 'firstinlastout' || currentPage === 'cafeteria'|| currentPage ==='missing_punches' || currentPage === 'shiftwise'|| currentPage==='enrolled_employees'|| currentPage==='doors' || currentPage==='access_groups' || currentPage==='tracking-emp-report' ||currentPage==='breakhours';
+  const isReportPage = currentPage.startsWith('report') || currentPage === 'reports' || currentPage === 'firstinlastout' || currentPage === 'cafeteria' || currentPage === 'missing_punches' || currentPage === 'enrolled_employees' || currentPage === 'doors' || currentPage === 'access_groups' || currentPage === 'tracking-emp-report' || currentPage === 'breakhours' || currentPage === 'firstinlastout' || currentPage === 'time-profile-door-access';
   const isExpanded = expandedMenus.includes('reports') || isReportPage;
   return (
     <>
@@ -103,7 +103,7 @@ const Header = ({ currentPage = "dashboard", children }: HeaderProps) => {
               <User size={20} />
             </div>
             <div className="user-details">
-              <div className="user-name">Niraj Kumar Yadav</div>
+              <div className="user-name">User</div>
               <div className="user-role">Administrator</div>
             </div>
             <button className="logout-btn" onClick={handlelogout}>
@@ -121,10 +121,10 @@ const Header = ({ currentPage = "dashboard", children }: HeaderProps) => {
               <BarChart3 size={20} className="sidebar-icon" />
               <span>DASHBOARD</span>
             </a>
-            
+
             {/* REPORT Menu with Submenu */}
             <div className="sidebar-menu-group">
-              <div 
+              <div
                 className={`sidebar-item ${isReportPage ? "active" : ""}`}
                 onClick={() => toggleMenu('reports')}
                 style={{ cursor: 'pointer' }}
@@ -133,7 +133,7 @@ const Header = ({ currentPage = "dashboard", children }: HeaderProps) => {
                 <span>REPORT</span>
                 {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
               </div>
-              
+
               {isExpanded && (
                 <div className="sidebar-submenu">
                   <a href="/reports" className={`sidebar-subitem ${currentPage === "reports" ? "active" : ""}`}>
@@ -148,19 +148,15 @@ const Header = ({ currentPage = "dashboard", children }: HeaderProps) => {
                     <Coffee size={14} className="sidebar-icon" />
                     <span>Cafe Area Reports</span>
                   </a>
-                   <a href="/reports/missing_punches" className={`sidebar-subitem ${currentPage === "missing_punches" ? "active" : ""}`}>
+                  <a href="/reports/missing_punches" className={`sidebar-subitem ${currentPage === "missing_punches" ? "active" : ""}`}>
                     <AlertCircle size={14} className="sidebar-icon" />
                     <span>Missing Punches Reports</span>
                   </a>
-                   <a href="/reports/shiftwise" className={`sidebar-subitem ${currentPage === "shiftwise" ? "active" : ""}`}>
-                    <Calendar size={14} className="sidebar-icon" />
-                    <span>Shift Reports</span>
-                  </a>
-                   <a href="/reports/enrolled_employees" className={`sidebar-subitem ${currentPage === "enrolled_employees" ? "active" : ""}`}>
+                  <a href="/reports/enrolled_employees" className={`sidebar-subitem ${currentPage === "enrolled_employees" ? "active" : ""}`}>
                     <UserCheck size={14} className="sidebar-icon" />
                     <span>Enrolled Employees</span>
                   </a>
-                   <a href="/reports/doors" className={`sidebar-subitem ${currentPage === "doors" ? "active" : ""}`}>
+                  <a href="/reports/doors" className={`sidebar-subitem ${currentPage === "doors" ? "active" : ""}`}>
                     <DoorOpen size={14} className="sidebar-icon" />
                     <span>Doors</span>
                   </a>
@@ -176,10 +172,15 @@ const Header = ({ currentPage = "dashboard", children }: HeaderProps) => {
                     <PauseCircle size={14} className="sidebar-icon" />
                     <span>Breakhrs-report</span>
                   </a>
+                   <a href="/reports/time-profile-door-access" className={`sidebar-subitem ${currentPage === "time-profile-door-access" ? "active" : ""}`}>
+                    <PauseCircle size={14} className="sidebar-icon" />
+                    <span>Time Profile</span>
+                  </a>
+                  
                 </div>
               )}
             </div>
-            
+
             <a href="#" className="sidebar-item">
               <Users size={20} className="sidebar-icon" />
               <span>USER</span>
@@ -215,7 +216,7 @@ const Header = ({ currentPage = "dashboard", children }: HeaderProps) => {
 
           </nav>
         </aside>
-        
+
         <main className="content">
           {children}
         </main>

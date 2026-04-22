@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api';
+import './EmployeeDashboard.css';
 
 const EmpLateExitCard = ({ activeUsers = 0 }) => {
   const [lateExitData, setLateExitData] = useState([]);

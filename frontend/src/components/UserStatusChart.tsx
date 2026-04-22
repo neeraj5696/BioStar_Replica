@@ -17,7 +17,7 @@ interface UserStatusChartProps {
   userStats: UserStats | null;
 }
 
-const StyledText = styled('text')(({ theme }) => ({
+const StyledText = styled('text')(() => ({
   fill: '#374151',
   textAnchor: 'middle',
   dominantBaseline: 'central',
@@ -25,7 +25,7 @@ const StyledText = styled('text')(({ theme }) => ({
   fontWeight: 600,
 }));
 
-const StyledSubText = styled('text')(({ theme }) => ({
+const StyledSubText = styled('text')(() => ({
   fill: '#6b7280',
   textAnchor: 'middle',
   dominantBaseline: 'central',
@@ -103,7 +103,7 @@ export default function UserStatusChart({ userStats }: UserStatusChartProps) {
           },
         }}
         slotProps={{
-          legend: { hidden: true },
+            
         }}
       >
         <PieCenterLabel subText="Total">{total}</PieCenterLabel>

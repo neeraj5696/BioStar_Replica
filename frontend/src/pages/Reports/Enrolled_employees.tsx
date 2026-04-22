@@ -1,36 +1,40 @@
-import React, { useEffect, useState } from 'react'
-import axios from 'axios'
-import { FileText, Users as Download, RefreshCw, } from 'lucide-react'
-import Header from '../components/Header'
-import '../App.css'
+import React, { useEffect, useState, useMemo } from 'react'
+import { FileText, Users as Download, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react'
+import Header from '../../components/Header'
 
-const token = localStorage.getItem('lebhai')
-
-const backendurl = import.meta.env.VITE_BACKEND_URL as string
-const getAuthHeader = () => ({ Authorization: `Bearer ${token}` })
+import '../../App.css'
+import api from '../../api'
 
 
 interface ReportRow { [key: string]: string | number }
 
-interface Filters {
-    startDate: string
-    endDate: string
-    selectedEmployeeId: string
-    selectedDepartmentId: string
-    selectedWorkGroupId: string
-    tableName: string
-}
-
-const Enrolled_employees = () => {
+const Firstinlastout_device = () => {
 
     const [reportData, setReportData] = useState<ReportRow[]>([])
     const [loading, setLoading] = useState(false)
 
-    const [filters, setFilters] = useState<Filters>({
-        startDate: '', endDate: '',
-        selectedEmployeeId: '', selectedDepartmentId: '',
-        selectedWorkGroupId: '', tableName: '',
-    })
+
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState(1)
+    const [itemsPerPage] = useState(500)
+    const [jumpToPage, setJumpToPage] = useState('')
+
+
+
+    // Pagination calculations
+    const totalPages = Math.ceil(reportData.length / itemsPerPage)
+    const startIndex = (currentPage - 1) * itemsPerPage
+    const endIndex = startIndex + itemsPerPage
+    const currentPageData = useMemo(() =>
+        reportData.slice(startIndex, endIndex),
+        [reportData, startIndex, endIndex]
+    )
+
+    // Reset pagination when data changes
+    useEffect(() => {
+        setCurrentPage(1)
+        setJumpToPage('')
+    }, [reportData])
 
     useEffect(() => {
 
@@ -43,9 +47,7 @@ const Enrolled_employees = () => {
         setLoading(true)
         try {
 
-            const res = await axios.get(`${backendurl}/api/Report/enrolled-employees`, {
-                headers: getAuthHeader()
-            })
+            const res = await api.get(`/api/Report/enrolled-employees`)
             setReportData(res.data)
 
         }
@@ -58,10 +60,7 @@ const Enrolled_employees = () => {
         }
     }
 
-    const resetFilters = () => {
-        setFilters({ startDate: '', endDate: '', selectedEmployeeId: '', selectedDepartmentId: '', selectedWorkGroupId: '', tableName: '' })
-        setReportData([])
-    }
+
 
     const exportCSV = () => {
         if (!reportData.length) return
@@ -69,11 +68,26 @@ const Enrolled_employees = () => {
         const rows = reportData.map(r => Object.values(r).join(',')).join('\n')
         const blob = new Blob([`${headers}\n${rows}`], { type: 'text/csv' })
         const url = URL.createObjectURL(blob)
-        const a = document.createElement('a'); a.href = url; a.download = `${filters.selectedEmployeeId}_firstin-lastout.csv`; a.click()
+        const a = document.createElement('a'); a.href = url; a.download = `Enrolled-employees.csv`; a.click()
         URL.revokeObjectURL(url)
     }
 
     const columns = reportData.length ? Object.keys(reportData[0]) : []
+
+    // Pagination handlers
+    const goToFirstPage = () => setCurrentPage(1)
+    const goToLastPage = () => setCurrentPage(totalPages)
+    const goToNextPage = () => setCurrentPage(prev => Math.min(prev + 1, totalPages))
+    const goToPreviousPage = () => setCurrentPage(prev => Math.max(prev - 1, 1))
+
+    const handleJumpToPage = (e: React.FormEvent) => {
+        e.preventDefault()
+        const pageNum = parseInt(jumpToPage)
+        if (pageNum >= 1 && pageNum <= totalPages) {
+            setCurrentPage(pageNum)
+            setJumpToPage('')
+        }
+    }
 
     return (
         <div className="app">
@@ -90,25 +104,19 @@ const Enrolled_employees = () => {
                         </div>
                     </div>
                     <div style={styles.pageHeaderRight}>
-                        <button style={styles.btnOutline} onClick={resetFilters}>
-                            <RefreshCw size={14} /> Reset
-                        </button>
+
                         <button style={styles.btnPrimary} onClick={exportCSV} disabled={!reportData.length}>
                             <Download size={14} /> Export CSV
                         </button>
                     </div>
                 </div>
 
-
-
-
-
                 {/* Table */}
                 {reportData.length > 0 ? (
                     <div style={styles.tableCard}>
                         <div style={styles.tableHeader}>
                             <span style={styles.tableTitle}>Report Results</span>
-                            <span style={styles.tableCount}>{reportData.length} records found</span>
+                            <span style={styles.tableCount}>{reportData.length} records found ({currentPageData.length} shown)</span>
                         </div>
                         <div style={styles.tableWrapper}>
                             <table style={styles.table}>
@@ -116,22 +124,90 @@ const Enrolled_employees = () => {
                                     <tr>
                                         <th style={{ ...styles.th, ...styles.thSticky }}>#</th>
                                         {columns.map(col => (
-                                            <th key={col} style={styles.th}>{col.replace(/([A-Z])/g, ' $1').trim()}</th>
+                                            <th key={col} style={styles.th}>{col.replace(/([A-Z])/g, ' $1').trim().toLocaleUpperCase()}</th>  // Header dynamically generated from column keys, with spaces before capital letters and uppercase text
                                         ))}
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {reportData.map((row, i) => (
-                                        <tr key={i} style={i % 2 === 0 ? styles.trEven : styles.trOdd}>
-                                            <td style={{ ...styles.td, ...styles.tdSticky, color: '#9ca3af', fontSize: '11px' }}>{i + 1}</td>
-                                            {columns.map(col => (
-                                                <td key={col} style={styles.td}>{String(row[col] ?? '—')}</td>
-                                            ))}
-                                        </tr>
-                                    ))}
+                                    {currentPageData.map((row, i) => {
+                                        const globalIndex = startIndex + i
+                                        return (
+                                            <tr key={globalIndex} style={globalIndex % 2 === 0 ? styles.trEven : styles.trOdd}>
+                                                <td style={{ ...styles.td, ...styles.tdSticky, color: '#9ca3af', fontSize: '11px' }}>{globalIndex + 1}</td>
+                                                {columns.map(col => (
+                                                    <td key={col} style={styles.td}>{String(row[col] ?? '—')}</td>
+                                                ))}
+                                            </tr>
+                                        )
+                                    })}
                                 </tbody>
                             </table>
                         </div>
+
+                        {/* Pagination Controls */}
+                        {totalPages > 1 && (
+                            <div style={styles.paginationContainer}>
+                                <div style={styles.paginationInfo}>
+                                    Showing {startIndex + 1}-{Math.min(endIndex, reportData.length)} of {reportData.length} records
+                                </div>
+
+                                <div style={styles.paginationControls}>
+                                    <button
+                                        style={currentPage === 1 ? styles.paginationBtnDisabled : styles.paginationBtn}
+                                        onClick={goToFirstPage}
+                                        disabled={currentPage === 1}
+                                        title="First page"
+                                    >
+                                        <ChevronsLeft size={16} />
+                                    </button>
+
+                                    <button
+                                        style={currentPage === 1 ? styles.paginationBtnDisabled : styles.paginationBtn}
+                                        onClick={goToPreviousPage}
+                                        disabled={currentPage === 1}
+                                        title="Previous page"
+                                    >
+                                        <ChevronLeft size={16} />
+                                    </button>
+
+                                    <div style={styles.pageInfo}>
+                                        Page {currentPage} of {totalPages}
+                                    </div>
+
+                                    <button
+                                        style={currentPage === totalPages ? styles.paginationBtnDisabled : styles.paginationBtn}
+                                        onClick={goToNextPage}
+                                        disabled={currentPage === totalPages}
+                                        title="Next page"
+                                    >
+                                        <ChevronRight size={16} />
+                                    </button>
+
+                                    <button
+                                        style={currentPage === totalPages ? styles.paginationBtnDisabled : styles.paginationBtn}
+                                        onClick={goToLastPage}
+                                        disabled={currentPage === totalPages}
+                                        title="Last page"
+                                    >
+                                        <ChevronsRight size={16} />
+                                    </button>
+                                </div>
+
+                                <form onSubmit={handleJumpToPage} style={styles.jumpToPage}>
+                                    <span style={styles.jumpLabel}>Go to:</span>
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        max={totalPages}
+                                        value={jumpToPage}
+                                        onChange={(e) => setJumpToPage(e.target.value)}
+                                        style={styles.jumpInput}
+                                        placeholder="Page"
+                                    />
+                                    <button type="submit" style={styles.jumpBtn}>Go</button>
+                                </form>
+                            </div>
+                        )}
                     </div>
                 ) : !loading && (
                     <div style={styles.emptyState}>
@@ -189,10 +265,22 @@ const styles: Record<string, React.CSSProperties> = {
     td: { padding: '10px 14px', fontSize: '13px', color: '#374151', borderBottom: '1px solid #f3f4f6', whiteSpace: 'nowrap' },
     tdSticky: { position: 'sticky', left: 0, background: 'inherit', zIndex: 5, textAlign: 'center' },
 
-    emptyState: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', background: '#fff', borderRadius: '12px', border: '1px solid #e5e7eb' },
+    emptyState: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '200px 40px', background: '#fff', borderRadius: '12px', border: '1px solid #e5e7eb' },
     emptyIcon: { marginBottom: '16px' },
-    emptyTitle: { fontSize: '16px', fontWeight: 600, color: '#374151', margin: '0 0 6px' },
-    emptySubtitle: { fontSize: '13px', color: '#9ca3af', margin: 0 },
+    emptyTitle: { fontSize: '20px', fontWeight: 600, color: '#374151', margin: '0 0 6px' },
+    emptySubtitle: { fontSize: '14px', color: '#9ca3af', margin: 0 },
+
+    // Pagination Styles
+    paginationContainer: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderTop: '1px solid #f3f4f6', background: '#f9fafb' },
+    paginationInfo: { fontSize: '13px', color: '#6b7280', fontWeight: 500 },
+    paginationControls: { display: 'flex', alignItems: 'center', gap: '8px' },
+    paginationBtn: { display: 'flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', border: '1px solid #d1d5db', borderRadius: '6px', background: '#fff', color: '#374151', cursor: 'pointer', transition: 'all 0.2s', fontSize: '14px', fontWeight: 500 },
+    paginationBtnDisabled: { display: 'flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', border: '1px solid #e5e7eb', borderRadius: '6px', background: '#f9fafb', color: '#9ca3af', cursor: 'not-allowed', fontSize: '14px', fontWeight: 500 },
+    pageInfo: { padding: '0 16px', fontSize: '14px', fontWeight: 600, color: '#374151', minWidth: '120px', textAlign: 'center' },
+    jumpToPage: { display: 'flex', alignItems: 'center', gap: '8px' },
+    jumpLabel: { fontSize: '13px', color: '#6b7280', fontWeight: 500 },
+    jumpInput: { width: '60px', padding: '6px 8px', border: '1px solid #d1d5db', borderRadius: '4px', fontSize: '13px', textAlign: 'center', outline: 'none' },
+    jumpBtn: { padding: '6px 12px', background: '#3b82f6', color: '#fff', border: 'none', borderRadius: '4px', fontSize: '13px', fontWeight: 500, cursor: 'pointer', transition: 'background 0.2s' },
 }
 
-export default Enrolled_employees
+export default Firstinlastout_device

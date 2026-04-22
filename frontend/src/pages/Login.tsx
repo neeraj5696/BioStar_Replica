@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 import "./Login.css";
-import {Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 
 const rawBackendUrl = import.meta.env.VITE_BACKEND_URL as string | undefined;
 const Backend_URL = rawBackendUrl
@@ -17,40 +17,42 @@ function Login() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const navigate = useNavigate();
 
-  
+
 
   const handleSubmit = async () => {
     if (!username || !password) {
       toast.error("Please enter username and password");
       return;
     }
-   
+
     setLoading(true);
     try {
       const response = await axios.post(
-       `${Backend_URL}/api/MagnumApi/login`,
-          
+        `${Backend_URL}/api/MagnumApi/login`,
+
         {
           username,
           password,
         },
         {
-          timeout: 3000
+          timeout: 2000
         }
       );
-      console.log("login response abd backend url",Backend_URL,response.data);
+      console.log("login response abd backend url", Backend_URL);
 
-      if (response.status ==200) {
-        // Store session data in localStorage
+      if (response.status == 200) {
+      
         localStorage.setItem(
-          "lebhai",
-          response.data.token || ''
+          "lebhai", response.data.token || ''
         );
-    
 
-        navigate("/dashboard", {
-          state: { responseData: response.data, username, password },
-        });
+
+        setTimeout(() => {
+          navigate("/dashboard", {
+            state: { responseData: response.data, username, password },
+          })
+
+        }, 500);
       }
     } catch (error: any) {
       console.log("Error response:", error.response);
@@ -78,7 +80,7 @@ function Login() {
             <img src="/magnum.png" style={{ height: "50px", width: "50px" }}
               alt="Dashboard" />
           </div>
-          <h1 className="text-5xl" style={{fontWeight: 800, padding:10}}>Login</h1>
+          <h1 className="text-5xl" style={{ fontWeight: 800, padding: 10 }}>Login</h1>
           <p className="text-sm text-gray-500 my-2">Hover to continue</p>
         </div>
 
@@ -94,7 +96,7 @@ function Login() {
             <div className="">
               <div className="text-center  !p-6 !mb-6">
                 <h2 className=" text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  Welcome Back to Magnum Dashboard 
+                  Welcome Back to Magnum Dashboard
                 </h2>
                 <p className="text-gray-500 mt-2">
                   Enter your credentials to continue
@@ -190,7 +192,7 @@ function Login() {
       {/* Copyright Footer */}
       <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-center text-white/70 text-sm">
         <div className="flex items-center justify-center gap-2 mb-1">
-         
+
           <span>Magnum Telesystem Private Limited</span>
         </div>
         <p>© {new Date().getFullYear()} Magnum Inc. All rights reserved.</p>
@@ -198,8 +200,8 @@ function Login() {
 
       {/* Bottom Right Logo */}
       <div className="absolute bottom-4 right-4">
-        <img src="/magnum.png" 
-          style={{height: '60px', width: '60px'}}
+        <img src="/magnum.png"
+          style={{ height: '60px', width: '60px' }}
           alt="magnum" />
       </div>
     </div>

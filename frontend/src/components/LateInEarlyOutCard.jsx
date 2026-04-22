@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react';
 import axios from "axios";
+import api from '../api';
 
 const backendurl = import.meta.env.VITE_BACKEND_URL 
 
@@ -12,13 +13,11 @@ const LateInEarlyOutCard = () => {
 
   const fetchOddHours = async () => {
     try {
-      const result = await axios.get(`${backendurl}/api/Dashboard/PunchSummaryToday`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      // console.log('✅ qbe:', result.data);
+      const result = await api.get('/api/Dashboard/PunchSummaryToday');
+      //  console.log('✅ OddHours raw response:', result.data);
       setData(result.data);
     } catch (err) {
-      console.error('❌ OddHours fetch failed:', err);
+      console.error('❌ LateInEarlyOutCard fetch failed:', err);
     }
   };
 

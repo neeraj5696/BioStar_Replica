@@ -8,7 +8,7 @@ const OddHoursSwipeCard = () => {
   const fetchOddHours = async () => {
     try {
       const result = await api.get('/api/Dashboard/PunchSummaryToday');
-      // console.log('✅ OddHours raw response:', result.data);
+      //  console.log('✅ OddHours raw response:', result.data);
       setData(result.data);
     } catch (err) {
       console.error('❌ OddHours fetch failed:', err);
@@ -24,14 +24,17 @@ const OddHoursSwipeCard = () => {
 
   return (
     <div className="chart-card odd-hours-card">
-      <div className="chart-header">
+
+      <div className="card-header-enhanced">
         <div className="header-left">
-          <span className="card-icon-enhanced">🌙</span>
-          <h3>Odd Hrs In/Out Swipe</h3>
+          <div className="card-icon-enhanced">🌙</div>
+          <div className="title-section">
+            <h3 className="card-title-enhanced">Odd Hrs In/Out Swipe</h3>
+            <p className="card-subtitle">Daily Performance Analytics</p>
+          </div>
         </div>
         <div className="export-badge">📊</div>
       </div>
-
       <div className="odd-hours-content">
         <div className="hours-grid">
           <div className="hour-card">

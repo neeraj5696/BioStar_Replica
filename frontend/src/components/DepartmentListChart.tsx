@@ -19,7 +19,7 @@ interface DepartmentListChartProps {
   totaldepartment: number | null;
 }
 
-const StyledText = styled('text')(({ theme }) => ({
+const StyledText = styled('text')(() => ({
   fill: '#374151',
   textAnchor: 'middle',
   dominantBaseline: 'central',
@@ -27,7 +27,7 @@ const StyledText = styled('text')(({ theme }) => ({
   fontWeight: 600,
 }));
 
-const StyledSubText = styled('text')(({ theme }) => ({
+const StyledSubText = styled('text')(() => ({
   fill: '#6b7280',
   textAnchor: 'middle',
   dominantBaseline: 'central',
@@ -56,12 +56,12 @@ export default function DepartmentListChart({ department, totaldepartment }: Dep
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isTablet = useMediaQuery(theme.breakpoints.down('md'));
   
-  const handleViewChange = (event: React.MouseEvent<HTMLElement>, newView: string | null) => {
+  const handleViewChange = (_event: React.MouseEvent<HTMLElement>, newView: string | null) => {
     if (newView !== null) {
       setView(newView);
     }
   };
-
+  
   // Define colors for departments
   const departmentColors = [
     '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', 
@@ -153,7 +153,7 @@ export default function DepartmentListChart({ department, totaldepartment }: Dep
                 innerRadius,
                 outerRadius: middleRadius,
                 data: mainDepartmentData,
-                arcLabel: (item) => `${Math.round(item.percentage)}%`,
+                arcLabel: (item) => `${Math.round((item.value / totalEmployees) * 100)}%`,
                 valueFormatter: ({ value }) => `${value} employees`,
                 highlightScope: { fade: 'global', highlight: 'item' },
                 highlighted: { additionalRadius: 3 },
@@ -166,7 +166,7 @@ export default function DepartmentListChart({ department, totaldepartment }: Dep
               },
             }}
             slotProps={{
-              legend: { hidden: true },
+             
             }}
           >
             <PieCenterLabel subText="Departments">{totaldepartment}</PieCenterLabel>
@@ -202,7 +202,7 @@ export default function DepartmentListChart({ department, totaldepartment }: Dep
               },
             }}
             slotProps={{
-              legend: { hidden: true },
+              
             }}
           >
             <PieCenterLabel subText="Detailed">{totalEmployees}</PieCenterLabel>

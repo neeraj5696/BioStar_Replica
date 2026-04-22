@@ -1,14 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import axios from 'axios'
 import { FileText, Users as Download, RefreshCw, } from 'lucide-react'
 import Header from '../components/Header'
 import '../App.css'
-
-const token = localStorage.getItem('lebhai')
-
-const backendurl = import.meta.env.VITE_BACKEND_URL as string
-const getAuthHeader = () => ({ Authorization: `Bearer ${token}` })
-
+import api from '../api'
 
 interface ReportRow { [key: string]: string | number }
 
@@ -43,9 +37,7 @@ const Enrolled_employees = () => {
         setLoading(true)
         try {
 
-            const res = await axios.get(`${backendurl}/api/Report/access-groups`, {
-                headers: getAuthHeader()
-            })
+            const res = await api.get(`api/Report/access-groups`)
             setReportData(res.data)
 
         }

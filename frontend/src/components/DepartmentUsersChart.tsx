@@ -19,7 +19,7 @@ interface DepartmentUsersChartProps {
   userStats1: UserStats1 | null;
 }
 
-const StyledText = styled('text')(({ theme }) => ({
+const StyledText = styled('text')(() => ({
   fill: '#374151',
   textAnchor: 'middle',
   dominantBaseline: 'central',
@@ -27,7 +27,7 @@ const StyledText = styled('text')(({ theme }) => ({
   fontWeight: 600,
 }));
 
-const StyledSubText = styled('text')(({ theme }) => ({
+const StyledSubText = styled('text')(() => ({
   fill: '#6b7280',
   textAnchor: 'middle',
   dominantBaseline: 'central',
@@ -61,7 +61,7 @@ export default function DepartmentUsersChart({ userStats1 }: DepartmentUsersChar
   const inside = userStats1?.insideUsers || 0;
   const outside = userStats1?.outsideUsers || 0;
 
-  const occupancyPercentage = total ? Math.round((outside / total) * 100) : 0;
+  const occupancyPercentage = total ? Math.round((inside / total) * 100) : 0;
 
   // Calculate responsive sizes
   const chartHeight = isMobile ? 250 : isTablet ? 280 : 300;
@@ -120,9 +120,7 @@ export default function DepartmentUsersChart({ userStats1 }: DepartmentUsersChar
             display: 'none',
           },
         }}
-        slotProps={{
-          legend: { hidden: true },
-        }}
+        slotProps={{}}
       >
         <PieCenterLabel subText="occupancy">{occupancyPercentage}%</PieCenterLabel>
       </PieChart>
